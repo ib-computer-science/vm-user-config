@@ -1,9 +1,10 @@
 SWAY_CONFIG_DIR = ~/.config/sway/
 FOOT_CONFIG_DIR = ~/.config/foot/
+EMACS_CONFIG_DIR = ~/.emacs.d/
 
 .PHONY: default
 
-default: sway-config foot-config bash-config
+default: sway-config foot-config bash-config emacs-config
 
 sway-config:
 	/usr/bin/mkdir -p ${SWAY_CONFIG_DIR}
@@ -15,3 +16,7 @@ foot-config:
 
 bash-config:
 	/usr/bin/ln -sf ${PWD}/bashrc ~/.bashrc
+
+emacs-config:
+	/usr/bin/mkdir -p ${EMACS_CONFIG_DIR}
+	/usr/bin/ln -sf ${PWD}/init.el ${EMACS_CONFIG_DIR}
