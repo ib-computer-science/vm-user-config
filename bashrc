@@ -7,3 +7,5 @@ fi
 
 bind '"\ep": history-search-backward'
 bind '"\en": history-search-forward'
+
+export PATH=${HOME}/.local/bin:${PATH}
