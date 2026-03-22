@@ -1,4 +1,6 @@
 (require 'package)
+(global-set-key "\M-j" 'dabbrev-expand)
+
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 (package-initialize)
 (custom-set-variables
