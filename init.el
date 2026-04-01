@@ -2,6 +2,9 @@
 (global-set-key "\M-j" 'dabbrev-expand)
 (setq inhibit-startup-screen t)
 
+(require 'agent-shell)
+(setq agent-shell-preferred-agent-config (agent-shell-anthropic-make-claude-code-config))
+
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 (package-initialize)
 (custom-set-variables
