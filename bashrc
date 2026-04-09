@@ -8,4 +8,4 @@ fi
 bind '"\ep": history-search-backward'
 bind '"\en": history-search-forward'
 
-export PATH=${HOME}/.local/bin:${PATH}
+export PATH=${HOME}/.local/bin:${HOME}/node_modules/.bin:${PATH}
