@@ -1,0 +1,246 @@
+8a9,13
+> 	ct helper helper-tftp-udp {
+> 		type "tftp" protocol udp
+> 		l3proto inet
+> 	}
+> 
+17a23,25
+> 		iifname "virbr0" jump mangle_PRE_policy_allow-host-ipv6
+> 		iifname "virbr0" jump mangle_PRE_libvirt
+> 		iifname "virbr0" return
+31a40,42
+> 		iifname "virbr0" jump nat_PRE_policy_allow-host-ipv6
+> 		iifname "virbr0" jump nat_PRE_libvirt
+> 		iifname "virbr0" return
+44a56,57
+> 		iifname "virbr0" oifname "wlp0s20f3" jump nat_POST_FedoraWorkstation
+> 		iifname "virbr0" oifname "wlp0s20f3" return
+46a60,65
+> 		iifname "wlp0s20f3" oifname "virbr0" jump nat_POST_libvirt
+> 		iifname "wlp0s20f3" oifname "virbr0" return
+> 		iifname "virbr0" oifname "virbr0" jump nat_POST_libvirt
+> 		iifname "virbr0" oifname "virbr0" return
+> 		oifname "virbr0" jump nat_POST_libvirt
+> 		oifname "virbr0" return
+48a68,69
+> 		iifname "virbr0" jump nat_POST_FedoraWorkstation
+> 		iifname "virbr0" return
+60a82,83
+> 		oifname "virbr0" jump nat_OUT_libvirt
+> 		oifname "virbr0" return
+104a128,130
+> 		iifname "virbr0" jump filter_IN_policy_allow-host-ipv6
+> 		iifname "virbr0" jump filter_IN_libvirt
+> 		iifname "virbr0" accept
+112a139,140
+> 		iifname "wlp0s20f3" oifname "virbr0" jump filter_FWD_FedoraWorkstation
+> 		iifname "wlp0s20f3" oifname "virbr0" reject with icmpx admin-prohibited
+114a143,148
+> 		iifname "virbr0" oifname "wlp0s20f3" jump filter_FWD_libvirt
+> 		iifname "virbr0" oifname "wlp0s20f3" accept
+> 		iifname "virbr0" oifname "virbr0" jump filter_FWD_libvirt
+> 		iifname "virbr0" oifname "virbr0" accept
+> 		iifname "virbr0" jump filter_FWD_libvirt
+> 		iifname "virbr0" accept
+116a151,152
+> 		oifname "virbr0" jump filter_FWD_FedoraWorkstation
+> 		oifname "virbr0" reject with icmpx admin-prohibited
+123a160,161
+> 		oifname "virbr0" jump filter_OUT_libvirt
+> 		oifname "virbr0" return
+372a411,581
+> 
+> 	chain filter_IN_libvirt {
+> 		jump filter_IN_libvirt_pre
+> 		jump filter_IN_libvirt_log
+> 		jump filter_IN_libvirt_deny
+> 		jump filter_IN_libvirt_allow
+> 		jump filter_IN_libvirt_post
+> 	}
+> 
+> 	chain filter_IN_libvirt_pre {
+> 	}
+> 
+> 	chain filter_IN_libvirt_log {
+> 	}
+> 
+> 	chain filter_IN_libvirt_deny {
+> 	}
+> 
+> 	chain filter_IN_libvirt_allow {
+> 		udp dport 67 accept
+> 		udp dport 547 accept
+> 		tcp dport 53 accept
+> 		udp dport 53 accept
+> 		tcp dport 22 accept
+> 		udp dport 69 ct helper set "helper-tftp-udp"
+> 		udp dport 69 accept
+> 		meta l4proto icmp accept
+> 		meta l4proto ipv6-icmp accept
+> 	}
+> 
+> 	chain filter_IN_libvirt_post {
+> 		reject
+> 	}
+> 
+> 	chain filter_OUT_libvirt {
+> 		jump filter_OUT_libvirt_pre
+> 		jump filter_OUT_libvirt_log
+> 		jump filter_OUT_libvirt_deny
+> 		jump filter_OUT_libvirt_allow
+> 		jump filter_OUT_libvirt_post
+> 	}
+> 
+> 	chain filter_OUT_libvirt_pre {
+> 	}
+> 
+> 	chain filter_OUT_libvirt_log {
+> 	}
+> 
+> 	chain filter_OUT_libvirt_deny {
+> 	}
+> 
+> 	chain filter_OUT_libvirt_allow {
+> 	}
+> 
+> 	chain filter_OUT_libvirt_post {
+> 	}
+> 
+> 	chain nat_OUT_libvirt {
+> 		jump nat_OUT_libvirt_pre
+> 		jump nat_OUT_libvirt_log
+> 		jump nat_OUT_libvirt_deny
+> 		jump nat_OUT_libvirt_allow
+> 		jump nat_OUT_libvirt_post
+> 	}
+> 
+> 	chain nat_OUT_libvirt_pre {
+> 	}
+> 
+> 	chain nat_OUT_libvirt_log {
+> 	}
+> 
+> 	chain nat_OUT_libvirt_deny {
+> 	}
+> 
+> 	chain nat_OUT_libvirt_allow {
+> 	}
+> 
+> 	chain nat_OUT_libvirt_post {
+> 	}
+> 
+> 	chain nat_POST_libvirt {
+> 		jump nat_POST_libvirt_pre
+> 		jump nat_POST_libvirt_log
+> 		jump nat_POST_libvirt_deny
+> 		jump nat_POST_libvirt_allow
+> 		jump nat_POST_libvirt_post
+> 	}
+> 
+> 	chain nat_POST_libvirt_pre {
+> 	}
+> 
+> 	chain nat_POST_libvirt_log {
+> 	}
+> 
+> 	chain nat_POST_libvirt_deny {
+> 	}
+> 
+> 	chain nat_POST_libvirt_allow {
+> 	}
+> 
+> 	chain nat_POST_libvirt_post {
+> 	}
+> 
+> 	chain filter_FWD_libvirt {
+> 		jump filter_FWD_libvirt_pre
+> 		jump filter_FWD_libvirt_log
+> 		jump filter_FWD_libvirt_deny
+> 		jump filter_FWD_libvirt_allow
+> 		jump filter_FWD_libvirt_post
+> 	}
+> 
+> 	chain filter_FWD_libvirt_pre {
+> 	}
+> 
+> 	chain filter_FWD_libvirt_log {
+> 	}
+> 
+> 	chain filter_FWD_libvirt_deny {
+> 	}
+> 
+> 	chain filter_FWD_libvirt_allow {
+> 	}
+> 
+> 	chain filter_FWD_libvirt_post {
+> 	}
+> 
+> 	chain nat_PRE_libvirt {
+> 		jump nat_PRE_libvirt_pre
+> 		jump nat_PRE_libvirt_log
+> 		jump nat_PRE_libvirt_deny
+> 		jump nat_PRE_libvirt_allow
+> 		jump nat_PRE_libvirt_post
+> 	}
+> 
+> 	chain nat_PRE_libvirt_pre {
+> 	}
+> 
+> 	chain nat_PRE_libvirt_log {
+> 	}
+> 
+> 	chain nat_PRE_libvirt_deny {
+> 	}
+> 
+> 	chain nat_PRE_libvirt_allow {
+> 	}
+> 
+> 	chain nat_PRE_libvirt_post {
+> 	}
+> 
+> 	chain mangle_PRE_libvirt {
+> 		jump mangle_PRE_libvirt_pre
+> 		jump mangle_PRE_libvirt_log
+> 		jump mangle_PRE_libvirt_deny
+> 		jump mangle_PRE_libvirt_allow
+> 		jump mangle_PRE_libvirt_post
+> 	}
+> 
+> 	chain mangle_PRE_libvirt_pre {
+> 	}
+> 
+> 	chain mangle_PRE_libvirt_log {
+> 	}
+> 
+> 	chain mangle_PRE_libvirt_deny {
+> 	}
+> 
+> 	chain mangle_PRE_libvirt_allow {
+> 	}
+> 
+> 	chain mangle_PRE_libvirt_post {
+> 	}
+377,379c586,588
+< 		counter packets 0 bytes 0 jump guest_cross
+< 		counter packets 0 bytes 0 jump guest_input
+< 		counter packets 0 bytes 0 jump guest_output
+---
+> 		counter packets 24 bytes 1824 jump guest_cross
+> 		counter packets 24 bytes 1824 jump guest_input
+> 		counter packets 12 bytes 912 jump guest_output
+383c592
+< 		ip saddr 192.168.124.0/24 iif "virbr0" counter packets 0 bytes 0 accept
+---
+> 		ip saddr 192.168.124.0/24 iif "virbr0" counter packets 12 bytes 912 accept
+388c597
+< 		oif "virbr0" ip daddr 192.168.124.0/24 ct state established,related counter packets 0 bytes 0 accept
+---
+> 		oif "virbr0" ip daddr 192.168.124.0/24 ct state established,related counter packets 12 bytes 912 accept
+398c607
+< 		ip saddr 192.168.124.0/24 ip daddr 224.0.0.0/24 counter packets 1 bytes 40 return
+---
+> 		ip saddr 192.168.124.0/24 ip daddr 224.0.0.0/24 counter packets 0 bytes 0 return
+401c610
+< 		meta l4proto udp ip saddr 192.168.124.0/24 ip daddr != 192.168.124.0/24 counter packets 0 bytes 0 masquerade to :1024-65535
+---
+> 		meta l4proto udp ip saddr 192.168.124.0/24 ip daddr != 192.168.124.0/24 counter packets 12 bytes 912 masquerade to :1024-65535
